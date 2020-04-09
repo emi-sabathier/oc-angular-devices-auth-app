@@ -8,12 +8,12 @@ import {ActivatedRoute} from '@angular/router';
   styleUrls: ['./single-appareil.component.scss']
 })
 export class SingleAppareilComponent implements OnInit {
-  name: string = 'Appareil';
-  status: string = 'Statut';
+  name: string;
+  status: string;
   constructor(private appareilService: AppareilService, private route: ActivatedRoute ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.params['id'];
+    const id = this.route.snapshot.params['id']; // 1, 2, 3
     // le + "cast" le string  ['id'] en nombre
     this.name = this.appareilService.getAppareilById(+id).name;
     this.status = this.appareilService.getAppareilById(+id).status;
