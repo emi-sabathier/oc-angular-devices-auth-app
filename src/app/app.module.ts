@@ -13,6 +13,7 @@ import {AuthService} from './services/auth.service';
 import {SingleAppareilComponent} from './single-appareil/single-appareil.component';
 import { ForOhFourComponent } from './for-oh-four/for-oh-four.component';
 import {AuthGuard} from './services/auth-guard.service';
+import { EditAppareilComponent } from './edit-appareil/edit-appareil.component';
 
 const appRoutes: Routes = [
   {
@@ -20,6 +21,9 @@ const appRoutes: Routes = [
   },
   {
     path: 'appareils/:id', canActivate: [AuthGuard], component: SingleAppareilComponent
+  },
+  {
+    path: 'edit', canActivate: [AuthGuard], component: EditAppareilComponent
   },
   {
     path: 'auth', component: AuthComponent
@@ -42,7 +46,8 @@ const appRoutes: Routes = [
     AuthComponent,
     AppareilViewComponent,
     SingleAppareilComponent,
-    ForOhFourComponent
+    ForOhFourComponent,
+    EditAppareilComponent
   ],
   imports: [
     BrowserModule,

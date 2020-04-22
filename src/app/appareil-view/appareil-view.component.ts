@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AppareilService} from '../services/appareil.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-appareil-view',
@@ -18,6 +19,7 @@ export class AppareilViewComponent implements OnInit {
     );
   });
   appareils: any[];
+  appareilSubscription: Subscription;
 
   constructor(private appareilService: AppareilService) {
     setTimeout(
@@ -28,12 +30,13 @@ export class AppareilViewComponent implements OnInit {
   }
 
   ngOnInit() {
-    // exécuté lors de la création du component par angular et APRES l'exécution du constructor
-    // pour aller chercher les informations de l'array dans le service
-    // Au moment de créer le component, l'array appareils (ligne 20) sera = à l'array dans le service
-    // Au moment de créer le component, angular va chercher le tableau dans le service et l'implémente dans le component via ngOnInit
-    // l'array :
-    this.appareils = this.appareilService.appareils;
+    this.appareilSubscription = this.appareilService.appareilSubject.subscribe(
+      (appareils: any[]) => {
+        this.appareils = appareils;
+      }
+    );
+    // le subject va émettre la copie des appareils du service
+    this.appareilService.emitAppareilSubject();
   }
 
   onAllumer() {
