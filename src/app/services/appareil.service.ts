@@ -1,26 +1,17 @@
 import {Subject} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+
+@Injectable()
 
 export class AppareilService {
 
   appareilSubject = new Subject<any>();
 
-  private appareils = [
-    {
-      id: 1,
-      name: 'Machine à laver',
-      status: 'éteint'
-    },
-    {
-      id: 2,
-      name: 'Frigo',
-      status: 'allumé'
-    },
-    {
-      id: 3,
-      name: 'Ordinateur',
-      status: 'éteint'
-    }
-  ];
+  private appareils = [];
+
+  constructor(private httpClient: HttpClient) {
+  }
 
   emitAppareilSubject() {
     this.appareilSubject.next(this.appareils.slice());
@@ -61,6 +52,7 @@ export class AppareilService {
     this.appareils[index].status = 'éteint';
     this.emitAppareilSubject();
   }
+
   // Je récupère name et status du submit form
   addAppareil(name: string, status: string) {
     const appareilObject = {
@@ -77,4 +69,34 @@ export class AppareilService {
     this.emitAppareilSubject(); // on émet le subject
   }
 
+  // Méthode pour enregistrer les appareils sur le serv
+  saveAppareilToServer() {
+    this.httpClient
+      .put('https://http-client-demo-da4d1.firebaseio.com/appareils.json', this.appareils)
+      .subscribe(
+        // Si tout va bien
+        () => {
+          console.log('enregistrement ok');
+        },
+        (error) => {
+          console.log('erreur de sauvegarde ' + error);
+        }
+      );
+  }
+  getAppareilsFromServer() {
+    this.httpClient
+      // array de type any
+      .get<any[]>('https://http-client-demo-da4d1.firebaseio.com/appareils.json')
+      .subscribe(
+        (response) => {
+          // présume que l'obj est de type object
+          // pour lui dire que ce sera un array de type any comme this.appareils, on met <any>
+          this.appareils = response;
+          this.emitAppareilSubject();
+        },
+        (error) => {
+          console.log('erreur de chargement ! ' + error);
+        }
+      );
+  }
 }
